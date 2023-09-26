@@ -10,9 +10,10 @@ import styles from './TodoMenu.styles';
 import { useStoreTodos } from '../../store/useStoreTodos';
 import { useStoreModal } from '../../store/useStoreModal';
 import TodoAddModal from '../TodoAddModal/TodoAddModal';
+import TodoDeleteModal from '../TodoDeleteModal/TodoDeleteModal';
+import TodoEmptyModal from '../TodoEmptyModal/TodoEmptyModal';
 import useDebounce from '../../hooks/useDebounceZustand';
 import { ChangeEvent } from '../../types/Events';
-import TodoDeleteModal from '../TodoDeleteModal/TodoDeleteModal';
 
 export default function TodoMenu() {
   const handleRef = useRef<HTMLInputElement | null>(null);
@@ -20,7 +21,6 @@ export default function TodoMenu() {
   const todosCount = useStoreTodos((store) => store.todosCount);
   const isLoading = useStoreTodos((store) => store.isLoading);
   const setIsLoading = useStoreTodos((store) => store.setIsLoading);
-  const emptyTodos = useStoreTodos((store) => store.emptyTodos);
   const setDebounce = useStoreTodos((store) => store.setDebounce);
   const [searchText, setSearchText] = useState('');
   const { component, presence } = animations;
@@ -32,9 +32,14 @@ export default function TodoMenu() {
     setIsLoading,
   });
 
-  function showModal() {
+  function showConfirmModal() {
     // Insert other logics here before/after showing modal
     modal.show('confirm');
+  }
+
+  function showAlertModal() {
+    // Insert other logics here before/after showing modal
+    modal.show('alert');
   }
 
   // On each change (keystroke)
@@ -50,6 +55,7 @@ export default function TodoMenu() {
     <>
       <TodoAddModal />
       <TodoDeleteModal />
+      <TodoEmptyModal />
       <Container
         sx={styles.container}
         maxWidth="sm"
@@ -85,7 +91,7 @@ export default function TodoMenu() {
                 type="submit"
                 size="small"
                 variant="contained"
-                onClick={() => showModal()}
+                onClick={() => showConfirmModal()}
                 component={motion.div}
                 // eslint-disable-next-line react/jsx-props-no-spreading
                 {...component}
@@ -97,7 +103,7 @@ export default function TodoMenu() {
                 type="submit"
                 size="small"
                 variant="contained"
-                onClick={() => emptyTodos()}
+                onClick={() => showAlertModal()}
                 component={motion.div}
                 // eslint-disable-next-line react/jsx-props-no-spreading
                 {...component}
