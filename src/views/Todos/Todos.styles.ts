@@ -1,9 +1,10 @@
 const styles = {
   container: {
-    marginTop: 20,
+    // marginTop: 20,
+    maxWidth: '40rem',
   },
   content: {
-    marginTop: '-10vh',
+    // width: '100%',
   },
 };
 

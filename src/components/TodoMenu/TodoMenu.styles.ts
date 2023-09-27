@@ -1,9 +1,12 @@
 const styles = {
   container: {
-    marginTop: 20,
+    marginTop: '2rem',
+    width: '100%',
+    paddingTop: '1rem',
+    paddingBottom: '1rem',
   },
   content: {
-    marginTop: '-10vh',
+    // flexGrow: 1,
   },
 };
 

@@ -1,4 +1,4 @@
-import { Container, Grid, Stack } from '@mui/material';
+import { Container, Grid, Stack, Paper } from '@mui/material';
 import { motion } from 'framer-motion';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
@@ -58,65 +58,66 @@ export default function TodoMenu() {
       <TodoEditModal />
       <TodoDeleteModal />
       <TodoEmptyModal />
-      <Container
-        sx={styles.container}
-        maxWidth="sm"
-        component={motion.div}
-        // eslint-disable-next-line react/jsx-props-no-spreading
-        {...presence}
-      >
-        <Grid
-          container
-          spacing={3}
-          alignItems="center"
-          justifyContent="center"
-          sx={styles.content}
+      <Paper>
+        <Container
+          sx={styles.container}
+          component={motion.div}
+          // eslint-disable-next-line react/jsx-props-no-spreading
+          {...presence}
         >
-          <Grid item xs={8}>
-            <TextInputSearch
-              isLoading={isLoading}
-              ref={handleRef}
-              label="Search Todo"
-              size="small"
-              fullWidth
-              type="text"
-              id="input-title"
-              name="title"
-              placeholder="..."
-              onChange={(event: ChangeEvent) => handleChange(event)}
-            />
-          </Grid>
-
-          <Grid item xs={4}>
-            <Stack direction="row" spacing={1}>
-              <Button
-                type="submit"
+          <Grid
+            container
+            spacing={1}
+            alignItems="center"
+            justifyContent="center"
+            sx={styles.content}
+          >
+            <Grid item xs={8}>
+              <TextInputSearch
+                isLoading={isLoading}
+                ref={handleRef}
+                label="Search Todo"
                 size="small"
-                variant="contained"
-                onClick={() => showConfirmModal()}
-                component={motion.div}
-                // eslint-disable-next-line react/jsx-props-no-spreading
-                {...component}
-              >
-                <AddIcon />
-              </Button>
+                fullWidth
+                type="text"
+                id="input-title"
+                name="title"
+                placeholder="..."
+                onChange={(event: ChangeEvent) => handleChange(event)}
+              />
+            </Grid>
 
-              <Button
-                type="submit"
-                size="small"
-                variant="contained"
-                onClick={() => showAlertModal()}
-                component={motion.div}
-                // eslint-disable-next-line react/jsx-props-no-spreading
-                {...component}
-                disabled={!todosCount}
-              >
-                <DeleteForeverIcon />
-              </Button>
-            </Stack>
+            <Grid item xs={4}>
+              <Stack direction="row" spacing={1}>
+                <Button
+                  type="submit"
+                  size="small"
+                  variant="contained"
+                  onClick={() => showConfirmModal()}
+                  component={motion.div}
+                  // eslint-disable-next-line react/jsx-props-no-spreading
+                  {...component}
+                >
+                  <AddIcon />
+                </Button>
+
+                <Button
+                  type="submit"
+                  size="small"
+                  variant="contained"
+                  onClick={() => showAlertModal()}
+                  component={motion.div}
+                  // eslint-disable-next-line react/jsx-props-no-spreading
+                  {...component}
+                  disabled={!todosCount}
+                >
+                  <DeleteForeverIcon />
+                </Button>
+              </Stack>
+            </Grid>
           </Grid>
-        </Grid>
-      </Container>
+        </Container>
+      </Paper>
     </>
   );
 }

@@ -18,7 +18,7 @@ export default function Todos() {
     >
       <Grid
         container
-        spacing={3}
+        spacing={1}
         alignItems="center"
         justifyContent="center"
         sx={styles.content}

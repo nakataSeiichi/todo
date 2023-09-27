@@ -55,8 +55,11 @@ export default function TodoList() {
                         onChange={() => toggleTodo(id)}
                       />
                     }
-                    label={title}
-                    sx={isCompleted ? styles.todoCompleted : {}}
+                    label={<Typography>{title}</Typography>}
+                    sx={[
+                      styles.todoTitle,
+                      isCompleted ? styles.todoCompleted : {},
+                    ]}
                   />
                   <Stack
                     direction="row"
@@ -93,8 +96,10 @@ export default function TodoList() {
                     </IconButton>
                   </Stack>
                 </AccordionSummary>
-                <AccordionDetails sx={styles.description}>
-                  <Typography>{description ?? 'None...'}</Typography>
+                <AccordionDetails sx={styles.descriptionContainer}>
+                  <Typography sx={styles.descriptionText}>
+                    {description ?? 'None...'}
+                  </Typography>
                 </AccordionDetails>
               </Accordion>
             );
