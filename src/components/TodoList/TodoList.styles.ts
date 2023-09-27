@@ -6,7 +6,7 @@ const styles = {
     width: '100%',
     bgcolor: 'background.paper',
   },
-  buttonMargin: {
+  buttonContainerMargin: {
     marginLeft: 'auto',
     marginRight: '1rem',
   },

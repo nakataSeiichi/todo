@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import animations from '../../utils/animations';
 import styles from './Todos.styles';
 import TodoMenu from '../../components/TodoMenu/TodoMenu';
-import TodoList from '../../components/TodoList/TodoListV2';
+import TodoList from '../../components/TodoList/TodoList';
 
 export default function Todos() {
   const { presence } = animations;

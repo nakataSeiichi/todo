@@ -3,54 +3,14 @@ import { test, expect, vi, Mock } from 'vitest';
 import { render } from '@testing-library/react';
 import { v4 as uuid } from 'uuid';
 import { useStoreTodos, TTodoStore } from './useStoreTodos';
-import { TTodo, TTodos } from '../types/Todos';
+import { TTodos } from '../types/Todos';
 
 vi.mock('zustand');
 
-type TMockTodoStore = {
-  todos?: TTodos;
-  todosOnGoing?: number;
-  todosCompleted?: number;
-  addTodo?: ({
-    id,
-    title,
-    description,
-    isCompleted,
-  }: {
-    id?: string;
-    title: string;
-    description: string;
-    isCompleted: boolean;
-  }) => void;
-  deleteTodo?: (id: string) => void;
-  toggleTodo?: (id: string) => void;
-  emptyTodos?: () => void;
-};
-
-type TTestDebounce = {
-  debounce: string;
-  setDebounce: (text: string) => void;
-};
-
-type TTestIsLoading = {
-  isLoading: boolean;
-  setIsLoading: (isLoading: boolean) => void;
-};
-
-type TTestSelectedTodo = {
-  selectedTodo: TTodo;
-  setSelectedTodo: (todo: TTodo) => void;
-};
+type TMockTodoStore = Partial<TTodoStore>;
 
 type TTestComponent = {
-  selector: (
-    store: TTodoStore
-  ) =>
-    | TTodos
-    | TMockTodoStore
-    | TTestDebounce
-    | TTestIsLoading
-    | TTestSelectedTodo;
+  selector: (store: TTodoStore) => TTodos | TMockTodoStore;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   effect: Mock<any, any>;
 };
@@ -103,6 +63,41 @@ describe('Test todo store', () => {
     });
     render(<TestComponent selector={selector} effect={effect} />);
     expect(effect).toHaveBeenCalledTimes(2);
+  });
+
+  test('it should add and edit an item to the store and rerun the effect', () => {
+    const selector = (store: TTodoStore) => {
+      return {
+        todos: store.todos,
+        addTodo: store.addTodo,
+        editTodo: store.editTodo,
+      };
+    };
+    let isTodoCreated = false;
+    let isTodoEdited = false;
+    let currentItems = {} as TTodoStore;
+
+    const effect = vi.fn().mockImplementation((items: TTodoStore) => {
+      currentItems = items;
+
+      if (!isTodoCreated) {
+        items.addTodo({
+          ...todo,
+        });
+        isTodoCreated = true;
+      } else if (!isTodoEdited && isTodoCreated) {
+        const editedTodo = {
+          id: todo.id,
+          title: 'edited todo title',
+          description: 'edited todo description',
+        };
+        items.editTodo(editedTodo);
+        isTodoEdited = true;
+      }
+    });
+    render(<TestComponent selector={selector} effect={effect} />);
+    expect(effect).toHaveBeenCalledTimes(3);
+    expect(currentItems.todos[0].title).toEqual('edited todo title');
   });
 
   test('it should add and delete an item and rerun the effect', () => {

@@ -1,34 +1,36 @@
 import TextField from '@mui/material/TextField';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
-import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
 import { useStoreModal } from '../../store/useStoreModal';
 import Modal from '../Modal/ModalBase';
 import { useStoreTodos } from '../../store/useStoreTodos';
+import { TTodo } from '../../types/Todos';
 
-export default function TodoAddModal() {
+export default function TodoEditModal() {
   const modal = useStoreModal();
-  const addTodo = useStoreTodos((store) => store.addTodo);
+  const selectedTodo = useStoreTodos((store) => store.selectedTodo);
+  const editTodo = useStoreTodos((store) => store.editTodo);
+  const setSelectedTodo = useStoreTodos((store) => store.setSelectedTodo);
 
   const handleClose = () => {
     modal.hide('confirm');
+    setSelectedTodo({} as TTodo);
   };
   const validationSchema = Yup.object({
     title: Yup.string().trim().required('Please enter something here...'),
   });
   const formik = useFormik({
     initialValues: {
-      id: '',
-      title: '',
-      description: '',
-      isCompleted: false,
+      id: selectedTodo.id,
+      title: selectedTodo.title,
+      description: selectedTodo.description,
     },
     validationSchema,
     validateOnChange: true,
     enableReinitialize: true,
-    onSubmit: async ({ title, description, isCompleted }, { resetForm }) => {
-      addTodo({ title, description, isCompleted });
-      resetForm();
+    onSubmit: async ({ id, title, description }) => {
+      editTodo({ id, title, description });
       handleClose();
     },
   });
@@ -37,9 +39,9 @@ export default function TodoAddModal() {
   return (
     <Modal
       open={modal.confirm.open}
-      dialogIcon={<AddIcon color="success" fontSize="large" />}
-      dialogTitle="Add Todo"
-      dialogContentText="Enter your task details below. Click Confirm to save."
+      dialogIcon={<EditIcon color="success" fontSize="large" />}
+      dialogTitle="Edit Todo"
+      dialogContentText="Click Confirm to save."
       handleSubmit={handleSubmit}
       handleClose={handleClose}
     >

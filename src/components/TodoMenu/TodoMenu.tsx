@@ -10,6 +10,7 @@ import styles from './TodoMenu.styles';
 import { useStoreTodos } from '../../store/useStoreTodos';
 import { useStoreModal } from '../../store/useStoreModal';
 import TodoAddModal from '../TodoAddModal/TodoAddModal';
+import TodoEditModal from '../TodoEditModal/TodoEditModal';
 import TodoDeleteModal from '../TodoDeleteModal/TodoDeleteModal';
 import TodoEmptyModal from '../TodoEmptyModal/TodoEmptyModal';
 import useDebounce from '../../hooks/useDebounceZustand';
@@ -54,6 +55,7 @@ export default function TodoMenu() {
   return (
     <>
       <TodoAddModal />
+      <TodoEditModal />
       <TodoDeleteModal />
       <TodoEmptyModal />
       <Container

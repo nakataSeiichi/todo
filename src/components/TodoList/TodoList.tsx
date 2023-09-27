@@ -1,73 +1,102 @@
 import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Checkbox from '@mui/material/Checkbox';
-import IconButton from '@mui/material/IconButton';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import Typography from '@mui/material/Typography';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import EditIcon from '@mui/icons-material/Edit';
+import { Checkbox, FormControlLabel, IconButton, Stack } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-// import EditIcon from '@mui/icons-material/Edit';
-import { motion } from 'framer-motion';
-import animations from '../../utils/animations';
 import styles from './TodoList.styles';
 import { useStoreTodos } from '../../store/useStoreTodos';
+import { useStoreModal } from '../../store/useStoreModal';
+import { TTodo } from '../../types/Todos';
 
 export default function TodoList() {
-  // const isLoading = useStoreTodos((store) => store.isLoading);
+  const modal = useStoreModal();
   const todos = useStoreTodos((store) => store.todos);
+  const setSelectedTodo = useStoreTodos((store) => store.setSelectedTodo);
   const debounce = useStoreTodos((store) => store.debounce);
   const filteredTodos = useStoreTodos((store) =>
-    store.todos.filter((todo) => todo.title.includes(debounce))
+    store.todos.filter((todo) =>
+      todo.title.toLowerCase().includes(debounce.toLowerCase())
+    )
   );
   const toggleTodo = useStoreTodos((store) => store.toggleTodo);
-  const deleteTodo = useStoreTodos((store) => store.deleteTodo);
-  const { presence } = animations;
+
+  function handleDeleteTodo(todo: TTodo) {
+    setSelectedTodo(todo);
+    modal.show('alert');
+  }
+
+  function handleEditTodo(todo: TTodo) {
+    setSelectedTodo(todo);
+    modal.show('confirm');
+  }
 
   return (
     <List sx={styles.list}>
       {todos &&
         (debounce === '' ? todos : filteredTodos).map(
-          ({ id, title, isCompleted }) => {
-            const labelId = `checkbox-list-label-${id}`;
+          ({ id, title, description, isCompleted }) => {
             return (
-              <ListItem
-                key={id}
-                secondaryAction={
-                  <IconButton
-                    sx={styles.buttonMargin}
-                    edge="end"
-                    aria-label="delete"
-                    onClick={() => deleteTodo(id)}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                }
-                disablePadding
-                component={motion.div}
-                // eslint-disable-next-line react/jsx-props-no-spreading
-                {...presence}
-              >
-                <ListItemButton
-                  role={undefined}
-                  onClick={() => toggleTodo(id)}
-                  dense
+              <Accordion key={id}>
+                <AccordionSummary
+                  sx={styles.accordionSX}
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel1a-content"
+                  id={`panel1a-header-${id}`}
                 >
-                  <ListItemIcon>
-                    <Checkbox
-                      edge="start"
-                      checked={isCompleted}
-                      tabIndex={-1}
-                      disableRipple
-                      inputProps={{ 'aria-labelledby': labelId }}
-                    />
-                  </ListItemIcon>
-                  <ListItemText
-                    id={labelId}
-                    primary={`${title}`}
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        sx={{ pointerEvents: 'none' }}
+                        checked={isCompleted}
+                        onChange={() => toggleTodo(id)}
+                      />
+                    }
+                    label={title}
                     sx={isCompleted ? styles.todoCompleted : {}}
                   />
-                </ListItemButton>
-              </ListItem>
+                  <Stack
+                    direction="row"
+                    spacing={0.5}
+                    sx={styles.buttonContainerMargin}
+                  >
+                    <IconButton
+                      edge="end"
+                      aria-label="delete"
+                      onClick={() =>
+                        handleEditTodo({
+                          id,
+                          title,
+                          description,
+                          isCompleted,
+                        })
+                      }
+                    >
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton
+                      edge="end"
+                      aria-label="delete"
+                      onClick={() =>
+                        handleDeleteTodo({
+                          id,
+                          title,
+                          description,
+                          isCompleted,
+                        })
+                      }
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Stack>
+                </AccordionSummary>
+                <AccordionDetails sx={styles.description}>
+                  <Typography>{description ?? 'None...'}</Typography>
+                </AccordionDetails>
+              </Accordion>
             );
           }
         )}

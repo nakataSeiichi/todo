@@ -4,8 +4,10 @@ import { devtools, persist } from 'zustand/middleware';
 import { v4 as uuid } from 'uuid';
 import { immer } from 'zustand/middleware/immer';
 import { TTodo, TTodos } from '../types/Todos';
+import { PartialPick } from '../types/Utility';
 
-type TAddTodo = Omit<TTodo, 'id'> & { id?: string };
+type TAddTodo = PartialPick<TTodo, 'id'>;
+type TEditTodo = Omit<TTodo, 'isCompleted'>;
 
 export type TTodoStore = {
   todos: TTodos;
@@ -15,7 +17,8 @@ export type TTodoStore = {
   debounce: string;
   isLoading: boolean;
   selectedTodo: TTodo;
-  addTodo: ({ id, title, description, isCompleted }: TAddTodo) => void;
+  addTodo: (props: TAddTodo) => void;
+  editTodo: (props: TEditTodo) => void;
   deleteTodo: (id: string) => void;
   toggleTodo: (id: string) => void;
   emptyTodos: () => void;
@@ -47,6 +50,17 @@ export const useStoreTodos = create<TTodoStore>()(
             },
             false,
             'addTodo'
+          ),
+        editTodo: ({ id, title, description }) =>
+          set(
+            (prev) => {
+              const current = prev.todos.find((todo: TTodo) => todo.id === id);
+              if (typeof current !== 'object') return;
+              current.title = title;
+              current.description = description;
+            },
+            false,
+            'editTodo'
           ),
         deleteTodo: (id) =>
           set(
