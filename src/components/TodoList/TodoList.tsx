@@ -26,12 +26,12 @@ export default function TodoList() {
 
   function handleDeleteTodo(todo: TTodo) {
     setSelectedTodo(todo);
-    modal.show('alert');
+    modal.show('todoDelete');
   }
 
   function handleEditTodo(todo: TTodo) {
     setSelectedTodo(todo);
-    modal.show('confirm');
+    modal.show('todoEdit');
   }
 
   return (

@@ -8,7 +8,7 @@ export default function TodoEmptyModal() {
   const emptyTodos = useStoreTodos((store) => store.emptyTodos);
 
   const handleClose = () => {
-    modal.hide('alert');
+    modal.hide('todoEmpty');
   };
 
   const handleSubmit = () => {
@@ -18,7 +18,7 @@ export default function TodoEmptyModal() {
 
   return (
     <Modal
-      open={modal.alert.open}
+      open={modal.todoEmpty.open}
       dialogIcon={<WarningIcon color="warning" fontSize="large" />}
       dialogTitle="Delete All"
       dialogContentText="Are you sure? Click Confirm to delete."

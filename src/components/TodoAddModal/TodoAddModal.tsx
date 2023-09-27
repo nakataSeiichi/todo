@@ -11,7 +11,7 @@ export default function TodoAddModal() {
   const addTodo = useStoreTodos((store) => store.addTodo);
 
   const handleClose = () => {
-    modal.hide('confirm');
+    modal.hide('todoAdd');
   };
   const validationSchema = Yup.object({
     title: Yup.string().trim().required('Please enter something here...'),
@@ -36,8 +36,8 @@ export default function TodoAddModal() {
 
   return (
     <Modal
-      open={modal.confirm.open}
-      dialogIcon={<AddIcon color="success" fontSize="large" />}
+      open={modal.todoAdd.open}
+      dialogIcon={<AddIcon color="primary" fontSize="large" />}
       dialogTitle="Add Todo"
       dialogContentText="Enter your task details below. Click Confirm to save."
       handleSubmit={handleSubmit}

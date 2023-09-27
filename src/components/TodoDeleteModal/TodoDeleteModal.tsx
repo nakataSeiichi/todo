@@ -11,7 +11,7 @@ export default function TodoDeleteModal() {
   const setSelectedTodo = useStoreTodos((store) => store.setSelectedTodo);
 
   const handleClose = () => {
-    modal.hide('alert');
+    modal.hide('todoDelete');
     setSelectedTodo({} as TTodo);
   };
 
@@ -23,7 +23,7 @@ export default function TodoDeleteModal() {
 
   return (
     <Modal
-      open={modal.alert.open}
+      open={modal.todoDelete.open}
       dialogIcon={<WarningIcon color="warning" fontSize="large" />}
       dialogTitle="Delete"
       dialogContentText="Are you sure? Click Confirm to delete."

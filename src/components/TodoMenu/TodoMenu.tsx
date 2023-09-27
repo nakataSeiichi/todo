@@ -35,12 +35,12 @@ export default function TodoMenu() {
 
   function showConfirmModal() {
     // Insert other logics here before/after showing modal
-    modal.show('confirm');
+    modal.show('todoAdd');
   }
 
   function showAlertModal() {
     // Insert other logics here before/after showing modal
-    modal.show('alert');
+    modal.show('todoEmpty');
   }
 
   // On each change (keystroke)

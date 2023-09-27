@@ -10,6 +10,18 @@ export type TStoreModal = {
   alert: {
     open: boolean;
   };
+  todoAdd: {
+    open: boolean;
+  };
+  todoEdit: {
+    open: boolean;
+  };
+  todoDelete: {
+    open: boolean;
+  };
+  todoEmpty: {
+    open: boolean;
+  };
   show: (modalName: TModal) => void;
   hide: (modalName: TModal) => void;
 };
@@ -24,6 +36,18 @@ export const useStoreModal = create<TStoreModal>()(
         open: false,
       },
       alert: {
+        open: false,
+      },
+      todoAdd: {
+        open: false,
+      },
+      todoEdit: {
+        open: false,
+      },
+      todoDelete: {
+        open: false,
+      },
+      todoEmpty: {
         open: false,
       },
       show: (modalName) =>

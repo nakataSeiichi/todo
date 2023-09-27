@@ -14,7 +14,7 @@ export default function TodoEditModal() {
   const setSelectedTodo = useStoreTodos((store) => store.setSelectedTodo);
 
   const handleClose = () => {
-    modal.hide('confirm');
+    modal.hide('todoEdit');
     setSelectedTodo({} as TTodo);
   };
   const validationSchema = Yup.object({
@@ -38,8 +38,8 @@ export default function TodoEditModal() {
 
   return (
     <Modal
-      open={modal.confirm.open}
-      dialogIcon={<EditIcon color="success" fontSize="large" />}
+      open={modal.todoEdit.open}
+      dialogIcon={<EditIcon color="primary" fontSize="large" />}
       dialogTitle="Edit Todo"
       dialogContentText="Click Confirm to save."
       handleSubmit={handleSubmit}
