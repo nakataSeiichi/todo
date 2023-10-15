@@ -1,14 +1,18 @@
 import WarningIcon from '@mui/icons-material/Warning';
 import { useStoreModal } from '../../store/useStoreModal';
 import Modal from '../Modal/ModalBase';
-import { useStoreTodos } from '../../store/useStoreTodos';
+import {
+  useDeleteTodo,
+  useSetSelectedTodo,
+  useTodoId,
+} from '../../store/useStoreTodos';
 import { TTodo } from '../../types/Todos';
 
 export default function TodoDeleteModal() {
   const modal = useStoreModal();
-  const id = useStoreTodos((store) => store.selectedTodo.id);
-  const deleteTodo = useStoreTodos((store) => store.deleteTodo);
-  const setSelectedTodo = useStoreTodos((store) => store.setSelectedTodo);
+  const id = useTodoId();
+  const deleteTodo = useDeleteTodo();
+  const setSelectedTodo = useSetSelectedTodo();
 
   const handleClose = () => {
     modal.hide('todoDelete');

@@ -8,21 +8,23 @@ import EditIcon from '@mui/icons-material/Edit';
 import { Checkbox, FormControlLabel, IconButton, Stack } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import styles from './TodoList.styles';
-import { useStoreTodos } from '../../store/useStoreTodos';
+import {
+  useToggleTodo,
+  useSetSelectedTodo,
+  useTodos,
+  useTodoDebounce,
+  useFilteredTodos,
+} from '../../store/useStoreTodos';
 import { useStoreModal } from '../../store/useStoreModal';
 import { TTodo } from '../../types/Todos';
 
 export default function TodoList() {
   const modal = useStoreModal();
-  const todos = useStoreTodos((store) => store.todos);
-  const setSelectedTodo = useStoreTodos((store) => store.setSelectedTodo);
-  const debounce = useStoreTodos((store) => store.debounce);
-  const filteredTodos = useStoreTodos((store) =>
-    store.todos.filter((todo) =>
-      todo.title.toLowerCase().includes(debounce.toLowerCase())
-    )
-  );
-  const toggleTodo = useStoreTodos((store) => store.toggleTodo);
+  const todos = useTodos();
+  const setSelectedTodo = useSetSelectedTodo();
+  const debounce = useTodoDebounce();
+  const filteredTodos = useFilteredTodos();
+  const toggleTodo = useToggleTodo();
 
   function handleDeleteTodo(todo: TTodo) {
     setSelectedTodo(todo);

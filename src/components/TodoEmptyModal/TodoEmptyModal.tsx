@@ -1,11 +1,11 @@
 import WarningIcon from '@mui/icons-material/Warning';
 import { useStoreModal } from '../../store/useStoreModal';
 import Modal from '../Modal/ModalBase';
-import { useStoreTodos } from '../../store/useStoreTodos';
+import { useEmptyTodos } from '../../store/useStoreTodos';
 
 export default function TodoEmptyModal() {
   const modal = useStoreModal();
-  const emptyTodos = useStoreTodos((store) => store.emptyTodos);
+  const emptyTodos = useEmptyTodos();
 
   const handleClose = () => {
     modal.hide('todoEmpty');

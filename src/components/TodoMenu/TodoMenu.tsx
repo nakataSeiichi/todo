@@ -7,7 +7,12 @@ import Button from '../Button/ButtonBase';
 import TextInputSearch from '../TextInputSearch/TextInputSearch';
 import animations from '../../utils/animations';
 import styles from './TodoMenu.styles';
-import { useStoreTodos } from '../../store/useStoreTodos';
+import {
+  useSetDebounce,
+  useSetIsLoading,
+  useTodosCount,
+  useTodoIsLoading,
+} from '../../store/useStoreTodos';
 import { useStoreModal } from '../../store/useStoreModal';
 import TodoAddModal from '../TodoAddModal/TodoAddModal';
 import TodoEditModal from '../TodoEditModal/TodoEditModal';
@@ -19,10 +24,10 @@ import { ChangeEvent } from '../../types/Events';
 export default function TodoMenu() {
   const handleRef = useRef<HTMLInputElement | null>(null);
   const modal = useStoreModal();
-  const todosCount = useStoreTodos((store) => store.todosCount);
-  const isLoading = useStoreTodos((store) => store.isLoading);
-  const setIsLoading = useStoreTodos((store) => store.setIsLoading);
-  const setDebounce = useStoreTodos((store) => store.setDebounce);
+  const todosCount = useTodosCount();
+  const isLoading = useTodoIsLoading();
+  const setIsLoading = useSetIsLoading();
+  const setDebounce = useSetDebounce();
   const [searchText, setSearchText] = useState('');
   const { component, presence } = animations;
 

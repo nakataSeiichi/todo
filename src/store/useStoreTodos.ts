@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-param-reassign */
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
@@ -121,6 +122,33 @@ export const useStoreTodos = create<TTodoStore>()(
 //   ]
 // >(persist(immer(devtools(store)), { name: 'todoStore' }));
 export default useStoreTodos;
+
+// facade layer
+
+export const useTodos = () => useStoreTodos((store) => store.todos);
+export const useTodosCount = () => useStoreTodos((store) => store.todosCount);
+export const useSelectedTodo = () =>
+  useStoreTodos((store) => store.selectedTodo);
+export const useTodoId = () => useStoreTodos((store) => store.selectedTodo.id);
+export const useTodoDebounce = () => useStoreTodos((store) => store.debounce);
+export const useFilteredTodos = () =>
+  useStoreTodos((store) =>
+    store.todos.filter((todo) =>
+      todo.title.toLowerCase().includes(useTodoDebounce().toLowerCase())
+    )
+  );
+export const useTodoIsLoading = () => useStoreTodos((store) => store.isLoading);
+
+export const useAddTodo = () => useStoreTodos((store) => store.addTodo);
+export const useEditTodo = () => useStoreTodos((store) => store.editTodo);
+export const useDeleteTodo = () => useStoreTodos((store) => store.deleteTodo);
+export const useToggleTodo = () => useStoreTodos((store) => store.toggleTodo);
+export const useEmptyTodos = () => useStoreTodos((store) => store.emptyTodos);
+export const useSetDebounce = () => useStoreTodos((store) => store.setDebounce);
+export const useSetIsLoading = () =>
+  useStoreTodos((store) => store.setIsLoading);
+export const useSetSelectedTodo = () =>
+  useStoreTodos((store) => store.setSelectedTodo);
 
 useStoreTodos.subscribe((newStore, prevStore) => {
   if (newStore.todos !== prevStore.todos) {

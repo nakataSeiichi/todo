@@ -4,14 +4,18 @@ import { useFormik } from 'formik';
 import EditIcon from '@mui/icons-material/Edit';
 import { useStoreModal } from '../../store/useStoreModal';
 import Modal from '../Modal/ModalBase';
-import { useStoreTodos } from '../../store/useStoreTodos';
+import {
+  useEditTodo,
+  useSetSelectedTodo,
+  useSelectedTodo,
+} from '../../store/useStoreTodos';
 import { TTodo } from '../../types/Todos';
 
 export default function TodoEditModal() {
   const modal = useStoreModal();
-  const selectedTodo = useStoreTodos((store) => store.selectedTodo);
-  const editTodo = useStoreTodos((store) => store.editTodo);
-  const setSelectedTodo = useStoreTodos((store) => store.setSelectedTodo);
+  const selectedTodo = useSelectedTodo();
+  const editTodo = useEditTodo();
+  const setSelectedTodo = useSetSelectedTodo();
 
   const handleClose = () => {
     modal.hide('todoEdit');

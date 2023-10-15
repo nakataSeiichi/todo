@@ -4,11 +4,11 @@ import { useFormik } from 'formik';
 import AddIcon from '@mui/icons-material/Add';
 import { useStoreModal } from '../../store/useStoreModal';
 import Modal from '../Modal/ModalBase';
-import { useStoreTodos } from '../../store/useStoreTodos';
+import { useAddTodo } from '../../store/useStoreTodos';
 
 export default function TodoAddModal() {
   const modal = useStoreModal();
-  const addTodo = useStoreTodos((store) => store.addTodo);
+  const addTodo = useAddTodo();
 
   const handleClose = () => {
     modal.hide('todoAdd');
