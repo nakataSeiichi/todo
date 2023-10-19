@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-param-reassign */
+import { v4 as uuid } from 'uuid';
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
-import { v4 as uuid } from 'uuid';
 import { immer } from 'zustand/middleware/immer';
 import { TTodo, TTodos } from '../types/Todos';
 import { PartialPick } from '../types/Utility';
@@ -10,11 +10,15 @@ import { PartialPick } from '../types/Utility';
 type TAddTodo = PartialPick<TTodo, 'id'>;
 type TEditTodo = Omit<TTodo, 'isCompleted'>;
 
+export type TTodoFilters = typeof todoFiltersTemplate;
+export type TTodoFilterTypes = keyof typeof todoFiltersTemplate;
+
 export type TTodoStore = {
   todos: TTodos;
   todosCount: number;
   todosOnGoing: number;
   todosCompleted: number;
+  todoFilters: TTodoFilterTypes;
   debounce: string;
   isLoading: boolean;
   selectedTodo: TTodo;
@@ -26,7 +30,10 @@ export type TTodoStore = {
   setDebounce: (text: string) => void;
   setIsLoading: (isLoading: boolean) => void;
   setSelectedTodo: (todo: TTodo) => void;
+  setTodoFilters: (todoFilters: TTodoFilterTypes) => void;
 };
+
+export const defaultFilterType = 'all';
 
 export const useStoreTodos = create<TTodoStore>()(
   persist(
@@ -39,6 +46,7 @@ export const useStoreTodos = create<TTodoStore>()(
         debounce: '',
         isLoading: false,
         selectedTodo: {} as TTodo,
+        todoFilters: defaultFilterType as TTodoFilterTypes,
         addTodo: ({ id, title, description, isCompleted }) =>
           set(
             (prev) => {
@@ -74,15 +82,9 @@ export const useStoreTodos = create<TTodoStore>()(
         toggleTodo: (id) =>
           set(
             (prev) => {
-              prev.todos = prev.todos.map((todo) => {
-                if (todo.id === id) {
-                  todo.isCompleted = !todo.isCompleted;
-                }
-                return todo;
-              });
-              // const current = prev.todos.find((todo: Todo) => todo.id === id);
-              // if (typeof current !== 'object') return;
-              // current.isCompleted = !current.isCompleted;
+              const current = prev.todos.find((todo) => todo.id === id);
+              if (typeof current !== 'object') return;
+              current.isCompleted = !current.isCompleted;
             },
             false,
             'toggleTodo'
@@ -95,18 +97,22 @@ export const useStoreTodos = create<TTodoStore>()(
             false,
             'emptyTodos'
           ),
-        setDebounce: (text: string) =>
+        setDebounce: (text) =>
           set((prev) => {
             prev.debounce = text;
             prev.isLoading = false;
           }),
-        setIsLoading: (isLoading: boolean) =>
+        setIsLoading: (isLoading) =>
           set((prev) => {
             prev.isLoading = isLoading;
           }),
-        setSelectedTodo: (todo: TTodo) =>
+        setSelectedTodo: (todo) =>
           set((prev) => {
             prev.selectedTodo = todo;
+          }),
+        setTodoFilters: (todoFilters) =>
+          set((prev) => {
+            prev.todoFilters = todoFilters;
           }),
       }))
     ),
@@ -125,20 +131,59 @@ export default useStoreTodos;
 
 // facade layer
 
+// state
 export const useTodos = () => useStoreTodos((store) => store.todos);
 export const useTodosCount = () => useStoreTodos((store) => store.todosCount);
+export const useCompletedTodos = () =>
+  useStoreTodos((store) => store.todos.filter((todo) => todo.isCompleted));
+export const useUnCompletedTodos = () =>
+  useStoreTodos((store) => store.todos.filter((todo) => !todo.isCompleted));
 export const useSelectedTodo = () =>
   useStoreTodos((store) => store.selectedTodo);
 export const useTodoId = () => useStoreTodos((store) => store.selectedTodo.id);
 export const useTodoDebounce = () => useStoreTodos((store) => store.debounce);
 export const useFilteredTodos = () =>
   useStoreTodos((store) =>
-    store.todos.filter((todo) =>
-      todo.title.toLowerCase().includes(useTodoDebounce().toLowerCase())
-    )
+    store.todos.filter((todo) => {
+      const title = todo.title.toLowerCase();
+      const debounceValue = useTodoDebounce().toLowerCase();
+      return title.includes(debounceValue);
+    })
   );
+
+export const todoFiltersTemplate = {
+  all: {
+    label: 'All',
+    selector: useTodos,
+  },
+  completed: {
+    label: 'Completed',
+    selector: useCompletedTodos,
+  },
+  uncompleted: {
+    label: 'Uncompleted',
+    selector: useUnCompletedTodos,
+  },
+};
+
+export const useTodoFilters = () => useStoreTodos((store) => store.todoFilters);
+
+export const useTempTodos = () => {
+  const selectedFilter = todoFiltersTemplate[useTodoFilters()].selector();
+  const debounceValue = useTodoDebounce().toLowerCase();
+
+  if (debounceValue === '') return selectedFilter;
+
+  const result = selectedFilter.filter((todo) => {
+    const title = todo.title.toLowerCase();
+    return title.includes(debounceValue);
+  });
+
+  return result;
+};
 export const useTodoIsLoading = () => useStoreTodos((store) => store.isLoading);
 
+// methods
 export const useAddTodo = () => useStoreTodos((store) => store.addTodo);
 export const useEditTodo = () => useStoreTodos((store) => store.editTodo);
 export const useDeleteTodo = () => useStoreTodos((store) => store.deleteTodo);
@@ -149,6 +194,8 @@ export const useSetIsLoading = () =>
   useStoreTodos((store) => store.setIsLoading);
 export const useSetSelectedTodo = () =>
   useStoreTodos((store) => store.setSelectedTodo);
+export const useSetTodoFilters = () =>
+  useStoreTodos((store) => store.setTodoFilters);
 
 useStoreTodos.subscribe((newStore, prevStore) => {
   if (newStore.todos !== prevStore.todos) {

@@ -2,7 +2,8 @@ import { grey } from '@mui/material/colors';
 
 const palette = {
   primary: {
-    main: '#00A8E6',
+    // main: '#00A8E6',
+    main: '#424250',
     contrastText: '#FFFFFF',
   },
   secondary: {

@@ -1,25 +1,25 @@
-import { Container, Grid, Stack, Paper } from '@mui/material';
-import { motion } from 'framer-motion';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import { Container, Grid, Paper, Stack } from '@mui/material';
+import { motion } from 'framer-motion';
 import { useRef, useState } from 'react';
-import Button from '../Button/ButtonBase';
-import TextInputSearch from '../TextInputSearch/TextInputSearch';
-import animations from '../../utils/animations';
-import styles from './TodoMenu.styles';
+import useDebounce from '../../hooks/useDebounceZustand';
+import { useStoreModal } from '../../store/useStoreModal';
 import {
   useSetDebounce,
   useSetIsLoading,
-  useTodosCount,
   useTodoIsLoading,
+  useTodosCount,
 } from '../../store/useStoreTodos';
-import { useStoreModal } from '../../store/useStoreModal';
-import TodoAddModal from '../TodoAddModal/TodoAddModal';
-import TodoEditModal from '../TodoEditModal/TodoEditModal';
-import TodoDeleteModal from '../TodoDeleteModal/TodoDeleteModal';
-import TodoEmptyModal from '../TodoEmptyModal/TodoEmptyModal';
-import useDebounce from '../../hooks/useDebounceZustand';
 import { ChangeEvent } from '../../types/Events';
+import animations from '../../utils/animations';
+import Button from '../Button/ButtonBase';
+import TextInputSearch from '../TextInputSearch/TextInputSearch';
+import TodoAddModal from '../TodoAddModal/TodoAddModal';
+import TodoDeleteModal from '../TodoDeleteModal/TodoDeleteModal';
+import TodoEditModal from '../TodoEditModal/TodoEditModal';
+import TodoEmptyModal from '../TodoEmptyModal/TodoEmptyModal';
+import styles from './TodoMenu.styles';
 
 export default function TodoMenu() {
   const handleRef = useRef<HTMLInputElement | null>(null);
@@ -80,7 +80,7 @@ export default function TodoMenu() {
             <Grid item xs={8}>
               <TextInputSearch
                 isLoading={isLoading}
-                ref={handleRef}
+                inputRef={handleRef}
                 label="Search Todo"
                 size="small"
                 fullWidth
